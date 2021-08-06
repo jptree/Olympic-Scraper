@@ -1,0 +1,15 @@
+Question 2, Part A:
+SELECT noc, bronze, gold FROM medal WHERE bronze > gold ORDER by bronze DESC;
+
+Question 2, Part B:
+SELECT * FROM medal WHERE rank IN (SELECT rank FROM medal GROUP BY rank HAVING COUNT(*) > 1);
+
+Question 2, Part C:
+SELECT ROW_NUMBER()  OVER() AS "Rank", g.noc AS "Gold", s.noc AS "Silver", b.noc as "Bronze" FROM
+(SELECT ROW_NUMBER()  OVER (ORDER BY gold desc, noc ASC) as "POSITION", noc from medal) as g
+LEFT JOIN
+(SELECT ROW_NUMBER()  OVER (ORDER BY silver desc, noc ASC) as "POSITION", noc from medal) as s
+ON g.POSITION = s.POSITION
+LEFT JOIN
+(SELECT ROW_NUMBER()  OVER (ORDER BY bronze desc, noc ASC) as "POSITION", noc from medal) as b
+ON g.POSITION = b.POSITION;
